@@ -3,83 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lekh | PRATYNOOROVERSE</title>
+<title>Lekh - PratyNoorverse❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 <style>
-  body { margin:0; padding:0; font-family: Arial, sans-serif; transition: background 1s ease; }
-  .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; }
-  h2 { text-align:center; margin:30px 0 10px; color:white; font-size:28px; z-index:2; position:relative; }
+  body { margin:0; padding:0; font-family: Arial,sans-serif; background:#fdfdfd; }
+  
+  .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; }
+  .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; }
+  .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); }
 
-  /* Gallery styling */
-  .gallery { display:grid; gap:20px; padding:20px; position:relative; z-index:2; }
-  .gallery.shayri { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-  .gallery.hot { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-  .gallery img { width:100%; border-radius:15px; cursor:pointer; transition: transform 0.3s; }
-  .gallery img:hover { transform: scale(1.05); }
+  .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:24px; color:#333; padding:10px 0; background:rgba(0,0,0,0.05); }
 
-  /* Modal */
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:50; }
-  .modal img { max-width:90%; max-height:90%; border-radius:15px; }
-
-  /* Theme toggle button */
-  .theme-toggle { position:fixed; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
+  /* Infinite heart button */
+  #infinite-heart-btn { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8); color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none; }
+  .flying-heart { position:absolute; font-size:20px; color: rgba(255,0,100,0.7); animation: flyHeart 1s ease-out forwards; }
+  @keyframes flyHeart { 0% { transform: translate(0,0) scale(0.5); opacity:1; } 100% { transform: translate(0,-150px) scale(1.2); opacity:0; } }
 </style>
 </head>
 <body>
-<div class="background"></div>
-<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
-<!-- Shayri Section -->
-<h2>Shayri</h2>
-<div class="gallery shayri">
-  <img src="Assets/Darkhwaast.jpg" alt="Darkhwaast" onclick="openModal(this.src)">
-  <img src="Assets/Duvidha.jpg" alt="Duvidha" onclick="openModal(this.src)">
+<!-- Left Toolbar -->
+<div class="left-strip">
+  <button id="toggle-buttons">👁️</button>
+  <button id="send-heart">❤️</button>
+  <button id="surprise-popup">💌</button>
+  <button id="about">ℹ️</button>
 </div>
 
-<!-- Too Hot To Handle Section -->
-<h2>Too Hot To Handle</h2>
-<div class="gallery hot" id="hotGallery">
-  <script>
-    for(let i=1;i<=44;i++){
-      document.write(`<img src="Assets/2H2H/${i}.jpg" alt="2H2H ${i}" onclick="openModal(this.src)">`);
-    }
-  </script>
+<!-- Content Area -->
+<div style="margin: 80px auto; max-width:800px; padding:20px; text-align:center;">
+  <h1 style="font-family:'Dancing Script', cursive; font-size:42px;">Lekh ✍️</h1>
+  <p style="font-size:18px;">This is the special writing space of Praty & Noor ❤️<br>More content will be added here soon.</p>
 </div>
 
-<!-- Modal -->
-<div id="imgModal" class="modal" onclick="closeModal()">
-  <img id="modalImg" src="">
-</div>
+<!-- Infinite Heart Button -->
+<button id="infinite-heart-btn">Press to send INFINITE Hearts to your Praty</button>
 
+<div class="bottom-strip">Made with ❤️ by Praty for Noor</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-// Modal Functions
-function openModal(src){ 
-  document.getElementById("modalImg").src=src; 
-  document.getElementById("imgModal").style.display="flex"; 
-}
-function closeModal(){ document.getElementById("imgModal").style.display="none"; }
+// Initialize EmailJS
+emailjs.init("JGhME2cskwslibmXv");
 
-// Theme toggle
-const body = document.body;
-function toggleTheme(){
-  if(body.classList.contains("day-theme")){
-    body.classList.remove("day-theme"); body.classList.add("night-theme");
-    document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
-    localStorage.setItem("theme","night");
-  } else {
-    body.classList.remove("night-theme"); body.classList.add("day-theme");
-    document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
-    localStorage.setItem("theme","day");
+const heartBtn = document.getElementById("send-heart");
+const infiniteBtn = document.getElementById("infinite-heart-btn");
+
+// 👁️ Toggle content
+document.getElementById("toggle-buttons").addEventListener("click", ()=>{
+  const content = document.querySelector("div[style*='max-width']");
+  content.style.display = content.style.display !== "none" ? "none" : "block";
+});
+
+// ❤️ Heart → Show infinite button
+heartBtn.addEventListener("click", ()=>{
+  infiniteBtn.style.display = "block";
+});
+
+// 💌 Coming Soon
+document.getElementById("surprise-popup").addEventListener("click", ()=>{
+  window.location.href = "comingsoon.html";
+});
+
+// ℹ️ About
+document.getElementById("about").addEventListener("click", ()=>{
+  window.location.href = "comingsoon.html";
+});
+
+// 💖 Infinite Heart
+infiniteBtn.addEventListener("click", () => {
+  emailjs.send("service_a7lopsi", "template_hh35k3a", {
+    to_email: "pratyyynooor@gmail.com",
+    message: "Noor clicked the INFINITE heart (from Lekh page) at " + new Date().toLocaleString()
+  }).then(() => {
+    console.log("Infinite heart email sent!");
+  }).catch(err => console.log("Email error:", err));
+
+  const rect = infiniteBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  infiniteBtn.style.display = "none";
+
+  for (let i = 0; i < 25; i++) {
+    const h = document.createElement("div");
+    h.className = "flying-heart";
+    const offsetX = Math.random() * 100 - 50;
+    const offsetY = Math.random() * 100 - 50;
+    h.style.left = centerX + offsetX + "px";
+    h.style.top = centerY + offsetY + "px";
+    h.style.fontSize = (15 + Math.random() * 15) + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1500);
   }
-}
 
-// Load saved theme
-if(localStorage.getItem("theme")==="night"){
-  body.classList.add("night-theme");
-  document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
-} else {
-  body.classList.add("day-theme");
-  document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
-}
+  const msg = document.createElement("div");
+  msg.textContent = "HEARTS FLOODED!";
+  msg.style.position = "fixed";
+  msg.style.top = centerY - 50 + "px";
+  msg.style.left = centerX + "px";
+  msg.style.transform = "translateX(-50%)";
+  msg.style.color = "rgba(255,0,100,0.9)";
+  msg.style.fontSize = "24px";
+  msg.style.fontWeight = "bold";
+  msg.style.zIndex = "25";
+  msg.style.opacity = "0";
+  msg.style.transition = "opacity 0.5s";
+  document.body.appendChild(msg);
+
+  setTimeout(() => { msg.style.opacity = "1"; }, 50);
+  setTimeout(() => { msg.style.opacity = "0"; setTimeout(()=> msg.remove(), 500); }, 1500);
+});
 </script>
 </body>
 </html>
