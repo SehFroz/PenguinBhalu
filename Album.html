@@ -31,6 +31,16 @@
 
   .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; }
   @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
+
+  /* Infinite heart button + flying hearts */
+  #infinite-heart-btn {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8);
+    color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none;
+  }
+  .flying-heart { position:absolute; font-size:20px; color: rgba(255,0,100,0.7); animation: flyHeart 1s ease-out forwards; }
+  @keyframes flyHeart { 0% { transform: translate(0,0) scale(0.5); opacity:1; } 100% { transform: translate(0,-150px) scale(1.2); opacity:0; } }
+
 </style>
 </head>
 <body class="day-theme">
@@ -40,23 +50,29 @@
 
 <!-- Left strip tools -->
 <div class="left-strip">
-  <button onclick="toggleButtons()">👁️</button>
-  <button onclick="sendHeart()">❤️</button>
-  <button onclick="window.location.href='comingsoon.html'">💌</button>
-  <button onclick="window.location.href='comingsoon.html'">ℹ️</button>
+  <button id="toggle-buttons">👁️</button>
+  <button id="send-heart">❤️</button>
+  <button id="surprise-popup">💌</button>
+  <button id="about">ℹ️</button>
 </div>
 
 <!-- Theme toggle -->
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
-<!-- Album grid -->
-<div class="album-container" id="album"></div>
+<!-- Album grid wrapper (toggle with 👁️) -->
+<div id="content-wrap">
+  <div class="album-container" id="album"></div>
+</div>
 
 <!-- Modal -->
 <div class="modal" id="modal">
   <img id="modal-img" src="">
 </div>
 
+<!-- Infinite Heart Button -->
+<button id="infinite-heart-btn">Press to send INFINITE Hearts to your Praty</button>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 // Generate album images
 const album = document.getElementById("album");
@@ -98,9 +114,69 @@ function toggleTheme(){
 // Default = petals
 generatePetals();
 
-// Placeholder heart + toggleButtons
-function sendHeart(){ alert("❤️ Hearts sent to Noor! ❤️"); }
-function toggleButtons(){ alert("👁️ Toggle effect placeholder"); }
+/* ===== Left strip logic ===== */
+const contentWrap = document.getElementById("content-wrap");
+const heartBtn = document.getElementById("send-heart");
+const infiniteBtn = document.getElementById("infinite-heart-btn");
+
+// 👁️ Toggle all content
+document.getElementById("toggle-buttons").addEventListener("click", ()=>{
+  contentWrap.style.display = (contentWrap.style.display === "none") ? "block" : "none";
+});
+
+// ❤️ Show infinite heart button
+heartBtn.addEventListener("click", ()=>{
+  infiniteBtn.style.display = "block";
+});
+
+// 💌 & ℹ️ redirects
+document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+
+// EmailJS init
+emailjs.init("JGhME2cskwslibmXv");
+
+// 💖 Infinite Heart — send email + flying hearts
+infiniteBtn.addEventListener("click", () => {
+  emailjs.send("service_a7lopsi", "template_hh35k3a", {
+    to_email: "pratyyynooor@gmail.com",
+    message: "Noor clicked the INFINITE heart (from Album page) at " + new Date().toLocaleString()
+  }).then(() => { console.log("Infinite heart email sent!"); }).catch(err => console.log("Email error:", err));
+
+  const rect = infiniteBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  infiniteBtn.style.display = "none";
+
+  for (let i = 0; i < 25; i++) {
+    const h = document.createElement("div");
+    h.className = "flying-heart";
+    const offsetX = Math.random() * 100 - 50;
+    const offsetY = Math.random() * 100 - 50;
+    h.style.left = centerX + offsetX + "px";
+    h.style.top = centerY + offsetY + "px";
+    h.style.fontSize = (15 + Math.random() * 15) + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1500);
+  }
+
+  const msg = document.createElement("div");
+  msg.textContent = "HEARTS FLOODED!";
+  msg.style.position = "fixed";
+  msg.style.top = centerY - 50 + "px";
+  msg.style.left = centerX + "px";
+  msg.style.transform = "translateX(-50%)";
+  msg.style.color = "rgba(255,0,100,0.9)";
+  msg.style.fontSize = "24px";
+  msg.style.fontWeight = "bold";
+  msg.style.zIndex = "25";
+  msg.style.opacity = "0";
+  msg.style.transition = "opacity 0.5s";
+  document.body.appendChild(msg);
+
+  setTimeout(() => { msg.style.opacity = "1"; }, 50);
+  setTimeout(() => { msg.style.opacity = "0"; setTimeout(()=> msg.remove(), 500); }, 1500);
+});
 </script>
 </body>
 </html>
