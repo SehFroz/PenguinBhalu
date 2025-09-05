@@ -6,7 +6,9 @@
 <title>PratyNoor Album</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 <style>
-  body { margin:0; padding:0; font-family: Arial, sans-serif; background:#f5f5f5; }
+  body { margin:0; padding:0; font-family: Arial, sans-serif; transition: background 1s ease; }
+  .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
+  .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; }
 
   /* Header */
   h1 {
@@ -15,6 +17,8 @@
     font-size: 42px;
     margin: 20px 0;
     color: #d6336c;
+    position: relative;
+    z-index: 2;
   }
 
   /* Left strip buttons */
@@ -42,6 +46,20 @@
     background: rgba(255,255,255,0.9);
   }
 
+  /* Theme toggle button */
+  .theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.7);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+  }
+
   /* Album Grid */
   .album-container {
     display: grid;
@@ -50,6 +68,8 @@
     max-width: 1000px;
     margin: 0 auto 50px auto;
     padding: 20px;
+    position: relative;
+    z-index: 2;
   }
   .album-container img {
     width: 100%;
@@ -114,7 +134,10 @@
   }
 </style>
 </head>
-<body>
+<body class="day-theme">
+
+<div class="background"></div>
+<div class="gradient-overlay"></div>
 
 <!-- Left Panel Buttons -->
 <div class="left-strip">
@@ -124,13 +147,14 @@
   <button id="about">ℹ️</button>
 </div>
 
+<!-- Theme toggle -->
+<button class="theme-toggle" id="theme-toggle">🌙</button>
+
 <!-- Page Title -->
 <h1>PratyNoor Album</h1>
 
 <!-- Album Grid -->
-<div class="album-container" id="album">
-  <!-- JS will insert PN1.jpg … PN29.jpg here -->
-</div>
+<div class="album-container" id="album"></div>
 
 <!-- Lightbox Popup -->
 <div id="lightbox" class="lightbox">
@@ -138,10 +162,10 @@
   <img class="lightbox-content" id="lightbox-img">
 </div>
 
+<audio id="theme-audio" loop></audio>
+
 <script>
-/* -------------------
-   Generate Album Grid
-   ------------------- */
+/* Album Generation */
 const album = document.getElementById("album");
 for(let i=1; i<=29; i++){
   const img = document.createElement("img");
@@ -151,12 +175,9 @@ for(let i=1; i<=29; i++){
   album.appendChild(img);
 }
 
-/* -------------------
-   Lightbox Logic
-   ------------------- */
+/* Lightbox Logic */
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
-
 function openLightbox(src){
   lightbox.style.display = "block";
   lightboxImg.src = src;
@@ -165,35 +186,70 @@ document.querySelector(".close").addEventListener("click", ()=> {
   lightbox.style.display = "none";
 });
 
-/* -------------------
-   Button Functionalities
-   ------------------- */
+/* Theme + Audio */
+const body = document.body;
+const themeBtn = document.getElementById("theme-toggle");
+const bg = document.querySelector(".background");
+const audioPlayer = document.getElementById("theme-audio");
+
+const daySong = "Assets/One Love (Official Audio).mp3";
+const nightSong = "Assets/One Kiss (Official Video).mp3";
+
+/* Load saved theme */
+window.addEventListener("load", ()=>{
+  const savedTheme = localStorage.getItem("theme");
+  if(savedTheme === "night"){
+    body.classList.add("night-theme");
+    bg.style.backgroundImage = "url('Assets/NightBG.jpg')";
+    themeBtn.textContent = "☀️";
+    audioPlayer.src = nightSong;
+  } else {
+    body.classList.add("day-theme");
+    bg.style.backgroundImage = "url('Assets/DayBG.jpg')";
+    themeBtn.textContent = "🌙";
+    audioPlayer.src = daySong;
+  }
+  audioPlayer.play().catch(()=>{});
+});
+
+/* Toggle Theme */
+themeBtn.addEventListener("click", ()=>{
+  if(body.classList.contains("day-theme")){
+    body.classList.remove("day-theme");
+    body.classList.add("night-theme");
+    bg.style.backgroundImage = "url('Assets/NightBG.jpg')";
+    themeBtn.textContent = "☀️";
+    audioPlayer.src = nightSong;
+    localStorage.setItem("theme","night");
+  } else {
+    body.classList.remove("night-theme");
+    body.classList.add("day-theme");
+    bg.style.backgroundImage = "url('Assets/DayBG.jpg')";
+    themeBtn.textContent = "🌙";
+    audioPlayer.src = daySong;
+    localStorage.setItem("theme","day");
+  }
+  audioPlayer.play().catch(()=>{});
+});
+
+/* Button Functionalities */
 document.getElementById("toggle-buttons").addEventListener("click", ()=>{
   album.style.display = album.style.display === "none" ? "grid" : "none";
 });
-
 document.getElementById("send-heart").addEventListener("click", ()=>{
-  const burstCount = 15;
-  for(let i=0;i<burstCount;i++){
+  for(let i=0;i<15;i++){
     const h = document.createElement("div");
     h.className = "flying-heart";
     h.textContent = "❤️";
-    const centerX = window.innerWidth/2 + (Math.random()*200 - 100);
-    const centerY = window.innerHeight/2 + (Math.random()*120 - 60);
-    h.style.left = centerX + "px";
-    h.style.top = centerY + "px";
+    h.style.left = (Math.random()*window.innerWidth) + "px";
+    h.style.top = (window.innerHeight-50) + "px";
     h.style.fontSize = (14 + Math.random()*24) + "px";
     document.body.appendChild(h);
     setTimeout(()=> h.remove(), 1400);
   }
 });
-
-document.getElementById("surprise-popup").addEventListener("click", ()=>{
-  window.location.href = "comingsoon.html";
-});
-document.getElementById("about").addEventListener("click", ()=>{
-  window.location.href = "comingsoon.html";
-});
+document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
+document.getElementById("about").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
 </script>
 </body>
 </html>
