@@ -1,28 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lekh - PratyNoorverse❤️</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lekh | PRATYNOOROVERSE</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
 <style>
-  body { margin:0; padding:0; font-family: Arial,sans-serif; background:#fdfdfd; }
-  
+  body { margin:0; padding:0; font-family: Arial, sans-serif; transition: background 1s ease; }
+
+  /* Background */
+  .background {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background-size:cover; background-position:center; z-index:-2;
+    transition: background-image 1s ease;
+  }
+
+  /* Headings and galleries */
+  h2 { text-align:center; margin:30px 0 10px; color:white; font-size:28px; z-index:2; position:relative; }
+  .gallery { display:grid; gap:20px; padding:20px; position:relative; z-index:2; }
+  .gallery.shayri { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .gallery.hot { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .gallery img { width:100%; border-radius:15px; cursor:pointer; transition: transform 0.3s; }
+  .gallery img:hover { transform: scale(1.05); }
+
+  /* Modal */
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:50; }
+  .modal img { max-width:90%; max-height:90%; border-radius:15px; }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    position:fixed; top:20px; right:20px;
+    background: rgba(255,255,255,0.7); border:none; padding:10px 15px;
+    border-radius:20px; cursor:pointer; font-size:18px; z-index:10;
+  }
+
+  /* Left strip (same look as homepage) */
   .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; }
-  .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; }
+  .left-strip button {
+    font-size:24px; border:none; background: rgba(255,255,255,0.5);
+    cursor:pointer; border-radius:10px; padding:5px 8px;
+    transition: transform 0.2s, background 0.2s;
+  }
   .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); }
 
-  .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:24px; color:#333; padding:10px 0; background:rgba(0,0,0,0.05); }
-
-  /* Infinite heart button */
-  #infinite-heart-btn { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8); color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none; }
+  /* Infinite heart button + flying hearts (match homepage behavior) */
+  #infinite-heart-btn {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8);
+    color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none;
+  }
   .flying-heart { position:absolute; font-size:20px; color: rgba(255,0,100,0.7); animation: flyHeart 1s ease-out forwards; }
   @keyframes flyHeart { 0% { transform: translate(0,0) scale(0.5); opacity:1; } 100% { transform: translate(0,-150px) scale(1.2); opacity:0; } }
+
+  /* Optional bottom strip for a cute footer */
+  .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:24px; color:#fff; padding:10px 0; z-index:5; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
 </style>
 </head>
 <body>
 
-<!-- Left Toolbar -->
+<!-- Background image layer -->
+<div class="background"></div>
+
+<!-- Left Toolbar (functional like homepage) -->
 <div class="left-strip">
   <button id="toggle-buttons">👁️</button>
   <button id="send-heart">❤️</button>
@@ -30,10 +70,32 @@
   <button id="about">ℹ️</button>
 </div>
 
-<!-- Content Area -->
-<div style="margin: 80px auto; max-width:800px; padding:20px; text-align:center;">
-  <h1 style="font-family:'Dancing Script', cursive; font-size:42px;">Lekh ✍️</h1>
-  <p style="font-size:18px;">This is the special writing space of Praty & Noor ❤️<br>More content will be added here soon.</p>
+<!-- Theme toggle -->
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+<!-- Content wrapper (so 👁️ can toggle it all at once) -->
+<div id="content-wrap">
+  <!-- Shayri Section -->
+  <h2>Shayri</h2>
+  <div class="gallery shayri">
+    <img src="Assets/Darkhwaast.jpg" alt="Darkhwaast" onclick="openModal(this.src)">
+    <img src="Assets/Duvidha.jpg" alt="Duvidha" onclick="openModal(this.src)">
+  </div>
+
+  <!-- Too Hot To Handle Section -->
+  <h2>Too Hot To Handle</h2>
+  <div class="gallery hot" id="hotGallery">
+    <script>
+      for(let i=1;i<=44;i++){
+        document.write(`<img src="Assets/2H2H/${i}.jpg" alt="2H2H ${i}" onclick="openModal(this.src)">`);
+      }
+    </script>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="imgModal" class="modal" onclick="closeModal()">
+  <img id="modalImg" src="">
 </div>
 
 <!-- Infinite Heart Button -->
@@ -41,36 +103,60 @@
 
 <div class="bottom-strip">Made with ❤️ by Praty for Noor</div>
 
+<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-// Initialize EmailJS
-emailjs.init("JGhME2cskwslibmXv");
 
+<script>
+/* ===== Theme handling (same feel as your original Lekh) ===== */
+const body = document.body;
+function applyTheme(theme){
+  const bg = document.querySelector(".background");
+  if(theme === "night"){
+    body.classList.remove("day-theme"); body.classList.add("night-theme");
+    if(bg) bg.style.backgroundImage="url('Assets/NightBG.jpg')";
+  } else {
+    body.classList.remove("night-theme"); body.classList.add("day-theme");
+    if(bg) bg.style.backgroundImage="url('Assets/DayBG.jpg')";
+  }
+  localStorage.setItem("theme", theme);
+}
+function toggleTheme(){
+  const current = body.classList.contains("night-theme") ? "night" : "day";
+  applyTheme(current === "night" ? "day" : "night");
+}
+// Initial theme load
+applyTheme(localStorage.getItem("theme") === "night" ? "night" : "day");
+
+/* ===== Modal functions ===== */
+function openModal(src){ 
+  document.getElementById("modalImg").src=src; 
+  document.getElementById("imgModal").style.display="flex"; 
+}
+function closeModal(){ document.getElementById("imgModal").style.display="none"; }
+
+/* ===== Left strip logic (now fully functional) ===== */
+const contentWrap = document.getElementById("content-wrap");
 const heartBtn = document.getElementById("send-heart");
 const infiniteBtn = document.getElementById("infinite-heart-btn");
 
-// 👁️ Toggle content
+// 👁️ Toggle all content
 document.getElementById("toggle-buttons").addEventListener("click", ()=>{
-  const content = document.querySelector("div[style*='max-width']");
-  content.style.display = content.style.display !== "none" ? "none" : "block";
+  contentWrap.style.display = (contentWrap.style.display === "none") ? "block" : "none";
 });
 
-// ❤️ Heart → Show infinite button
+// ❤️ Show infinite heart button
 heartBtn.addEventListener("click", ()=>{
   infiniteBtn.style.display = "block";
 });
 
-// 💌 Coming Soon
-document.getElementById("surprise-popup").addEventListener("click", ()=>{
-  window.location.href = "comingsoon.html";
-});
+// 💌 & ℹ️ redirects
+document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 
-// ℹ️ About
-document.getElementById("about").addEventListener("click", ()=>{
-  window.location.href = "comingsoon.html";
-});
+// EmailJS init
+emailjs.init("JGhME2cskwslibmXv");
 
-// 💖 Infinite Heart
+// 💖 Infinite Heart — send email + flying hearts
 infiniteBtn.addEventListener("click", () => {
   emailjs.send("service_a7lopsi", "template_hh35k3a", {
     to_email: "pratyyynooor@gmail.com",
