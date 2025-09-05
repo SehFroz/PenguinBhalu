@@ -6,7 +6,7 @@
 <title>Album - PratyNooroverse❤️</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 <style>
-  body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: Arial, sans-serif; transition: background 1s ease; }
+  body { margin:0; padding:0; min-height:100vh; overflow-x:hidden; font-family: Arial, sans-serif; transition: background 1s ease; }
   .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
   .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; }
 
@@ -18,7 +18,17 @@
 
   .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
 
-  .album-content { margin-top:120px; text-align:center; color:white; font-size:24px; }
+  /* Album grid */
+  .album-content { margin:100px auto 80px auto; width:90%; max-width:1000px; display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:15px; z-index:2; position:relative; }
+  .album-content img { width:100%; height:auto; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.4); transition: transform 0.3s; }
+  .album-content img:hover { transform:scale(1.05); }
+
+  /* Hearts animation */
+  .heart { position: fixed; font-size:24px; animation: floatUp 2s linear forwards; }
+  @keyframes floatUp {
+    from { transform: translateY(0); opacity:1; }
+    to { transform: translateY(-200px); opacity:0; }
+  }
 </style>
 </head>
 <body class="day-theme">
@@ -29,7 +39,7 @@
 <div class="bottom-strip">Noor’s Album ❤️</div>
 
 <div class="left-strip">
-  <button id="toggle-buttons">👁️</button>
+  <button id="home-btn">👁️</button>
   <button id="send-heart">❤️</button>
   <button id="surprise-popup">💌</button>
   <button id="about">ℹ️</button>
@@ -37,9 +47,14 @@
 
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
+<!-- ✅ Your pictures are back here -->
 <div class="album-content">
-  <h1>Welcome to the Album 📸</h1>
-  <p>Your memories will appear here...</p>
+  <img src="Assets/2H2H/1.jpg" alt="pic1">
+  <img src="Assets/2H2H/2.jpg" alt="pic2">
+  <img src="Assets/2H2H/3.jpg" alt="pic3">
+  <img src="Assets/2H2H/4.jpg" alt="pic4">
+  <img src="Assets/2H2H/5.jpg" alt="pic5">
+  <!-- Add all your images up to 44.jpg like this -->
 </div>
 
 <audio id="theme-audio" loop></audio>
@@ -51,10 +66,11 @@ const audioPlayer = document.getElementById("theme-audio");
 const daySong = "Assets/One Love (Official Audio).mp3";
 const nightSong = "Assets/One Kiss (Official Video).mp3";
 
-/* Restore theme & song from homepage */
+/* Restore theme & song */
 window.addEventListener("load", ()=> {
   const savedTheme = localStorage.getItem("theme");
   const savedSong = localStorage.getItem("song");
+
   if(savedTheme === "night"){
     body.classList.remove("day-theme"); body.classList.add("night-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
@@ -62,6 +78,7 @@ window.addEventListener("load", ()=> {
     body.classList.remove("night-theme"); body.classList.add("day-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
   }
+
   if(savedSong){
     audioPlayer.src = savedSong;
   } else {
@@ -70,7 +87,7 @@ window.addEventListener("load", ()=> {
   audioPlayer.play().catch(()=>{});
 });
 
-/* Theme toggle */
+/* Toggle theme */
 function toggleTheme(){
   if(body.classList.contains("day-theme")){
     body.classList.remove("day-theme"); body.classList.add("night-theme");
@@ -86,8 +103,18 @@ function toggleTheme(){
 }
 
 /* Left panel buttons */
-document.getElementById("toggle-buttons").addEventListener("click", ()=>{ window.location.href="index.html"; });
-document.getElementById("send-heart").addEventListener("click", ()=>{ alert("Hearts will be added here too ❤️"); });
+document.getElementById("home-btn").addEventListener("click", ()=>{ window.location.href="index.html"; });
+
+document.getElementById("send-heart").addEventListener("click", ()=> {
+  const heart = document.createElement("div");
+  heart.className="heart";
+  heart.innerText="❤️";
+  heart.style.left = (Math.random()*window.innerWidth) + "px";
+  heart.style.top = (window.innerHeight-50) + "px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),2000);
+});
+
 document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 </script>
