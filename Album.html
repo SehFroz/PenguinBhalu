@@ -1,300 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PratyNoor Album</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-<style>
-  body { margin:0; padding:0; font-family: Arial, sans-serif; transition: background 1s ease; }
-  .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
-  .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PratyNoor Album</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      background-size: cover;
+      background-position: center;
+    }
 
-  /* Header */
-  h1 {
-    text-align:center;
-    font-family: 'Dancing Script', cursive;
-    font-size: 42px;
-    margin: 20px 0;
-    color: #d6336c;
-    position: relative;
-    z-index: 2;
-  }
+    /* Left Panel */
+    .left-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 60px;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+    .left-panel button {
+      background: white;
+      border: none;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
-  /* Left strip buttons */
-  .left-strip {
-    position: fixed;
-    left: 0;
-    top: 100px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 10px;
-    z-index: 10;
-  }
-  .left-strip button {
-    font-size: 24px;
-    border: none;
-    background: rgba(255,255,255,0.7);
-    cursor: pointer;
-    border-radius: 10px;
-    padding: 5px 8px;
-    transition: transform 0.2s, background 0.2s;
-  }
-  .left-strip button:hover {
-    transform: scale(1.2);
-    background: rgba(255,255,255,0.9);
-  }
+    /* Gallery */
+    .gallery {
+      margin-left: 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .gallery img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
 
-  /* Theme toggle button */
-  .theme-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255,255,255,0.7);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 18px;
-    z-index: 10;
-  }
+    /* Expanded Image */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+    .lightbox:active { display: none; }
 
-  /* Album Grid */
-  .album-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    max-width: 1000px;
-    margin: 0 auto 50px auto;
-    padding: 20px;
-    position: relative;
-    z-index: 2;
-  }
-  .album-container img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .album-container img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  }
+    /* Flying Hearts */
+    .flying-heart {
+      position: fixed;
+      animation: floatUp 1.4s linear;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-200px); opacity: 0; }
+    }
 
-  /* Lightbox Popup */
-  .lightbox {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
-  }
-  .lightbox-content {
-    display: block;
-    max-width: 80%;
-    max-height: 80%;
-    margin: 60px auto;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(255,255,255,0.3);
-  }
-  .lightbox:target {
-    display: block;
-  }
-  .close {
-    position: absolute;
-    top: 30px;
-    right: 50px;
-    font-size: 40px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .close:hover {
-    color: #ff0077;
-  }
-
-  /* Flying hearts animation */
-  .flying-heart {
-    position: absolute;
-    font-size: 20px;
-    color: rgba(255,0,100,0.9);
-    animation: flyHeart 1.2s ease-out forwards;
-    pointer-events: none;
-  }
-  @keyframes flyHeart {
-    0% { transform: translateY(0) scale(0.6); opacity: 1; }
-    100% { transform: translateY(-220px) scale(1.2); opacity: 0; }
-  }
-
-  /* Popup box for infinite hearts */
-  .heart-popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255,255,255,0.95);
-    padding: 20px 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    z-index: 200;
-    text-align: center;
-  }
-  .heart-popup button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 10px;
-    background: #ff4d88;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .heart-popup button:hover {
-    background: #e63972;
-  }
-</style>
+    /* Popup */
+    #heart-popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+      z-index: 3000;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    #heart-popup button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border: none;
+      background: crimson;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body class="day-theme">
+<body>
 
-<div class="background"></div>
-<div class="gradient-overlay"></div>
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <button id="send-heart">❤️</button>
+    <button id="send-star">⭐</button>
+    <button id="send-petal">🌸</button>
+    <button id="toggle-theme">🌙</button>
+  </div>
 
-<!-- Left Panel Buttons -->
-<div class="left-strip">
-  <button id="toggle-buttons">👁️</button>
-  <button id="send-heart">❤️</button>
-  <button id="surprise-popup">💌</button>
-  <button id="about">ℹ️</button>
-</div>
+  <!-- Gallery -->
+  <div class="gallery" id="gallery"></div>
 
-<!-- Theme toggle -->
-<button class="theme-toggle" id="theme-toggle">🌙</button>
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightbox-img" src="">
+  </div>
 
-<!-- Page Title -->
-<h1>PratyNoor Album</h1>
+  <!-- Popup -->
+  <div id="heart-popup">
+    <p>Press to send infinite hearts to your Praty ❤️</p>
+    <button id="confirm-heart">Send</button>
+  </div>
 
-<!-- Album Grid -->
-<div class="album-container" id="album"></div>
+  <!-- Audio -->
+  <audio id="theme-audio" loop></audio>
 
-<!-- Lightbox Popup -->
-<div id="lightbox" class="lightbox">
-  <a href="#" class="close">&times;</a>
-  <img class="lightbox-content" id="lightbox-img">
-</div>
+  <script>
+    const body = document.body;
+    const audioPlayer = document.getElementById("theme-audio");
+    const daySong = "Assets/One Love (Official Audio).mp3";
+    const nightSong = "Assets/One Kiss (Official Video).mp3";
 
-<!-- Heart Popup -->
-<div class="heart-popup" id="heart-popup">
-  <p>💖 Press to send infinite hearts to your Praty 💖</p>
-  <button id="confirm-heart">Send Hearts</button>
-</div>
+    /* Load Theme + Song */
+    function loadThemeState() {
+      const savedTheme = localStorage.getItem("theme") || "day";
+      const savedSong = localStorage.getItem("song") || daySong;
 
-<audio id="theme-audio" loop></audio>
+      if(savedTheme === "day"){
+        body.classList.add("day-theme");
+        body.style.backgroundImage = "url('Assets/DayBG.jpg')";
+        document.getElementById("toggle-theme").textContent = "🌙";
+      } else {
+        body.classList.add("night-theme");
+        body.style.backgroundImage = "url('Assets/NightBG.jpg')";
+        document.getElementById("toggle-theme").textContent = "☀️";
+      }
+      audioPlayer.src = savedSong;
+      audioPlayer.play();
+    }
 
-<script>
-/* Album Generation */
-const album = document.getElementById("album");
-for(let i=1; i<=29; i++){
-  const img = document.createElement("img");
-  img.src = "Assets/PN" + i + ".jpg";
-  img.alt = "PN" + i;
-  img.addEventListener("click", () => openLightbox(img.src));
-  album.appendChild(img);
-}
+    /* Toggle Theme */
+    document.getElementById("toggle-theme").addEventListener("click", ()=>{
+      if(body.classList.contains("day-theme")){
+        body.classList.remove("day-theme"); body.classList.add("night-theme");
+        body.style.backgroundImage = "url('Assets/NightBG.jpg')";
+        document.getElementById("toggle-theme").textContent = "☀️";
+        audioPlayer.src = nightSong;
+      } else {
+        body.classList.remove("night-theme"); body.classList.add("day-theme");
+        body.style.backgroundImage = "url('Assets/DayBG.jpg')";
+        document.getElementById("toggle-theme").textContent = "🌙";
+        audioPlayer.src = daySong;
+      }
+      audioPlayer.play();
+      localStorage.setItem("theme", body.classList.contains("day-theme") ? "day" : "night");
+      localStorage.setItem("song", audioPlayer.src);
+    });
 
-/* Lightbox Logic */
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-function openLightbox(src){
-  lightbox.style.display = "block";
-  lightboxImg.src = src;
-}
-document.querySelector(".close").addEventListener("click", ()=> {
-  lightbox.style.display = "none";
-});
+    /* Populate Gallery */
+    const gallery = document.getElementById("gallery");
+    for(let i=1; i<=29; i++){
+      const img = document.createElement("img");
+      img.src = `Assets/PN${i}.jpg`;
+      img.alt = `PN${i}`;
+      img.addEventListener("click", ()=>{
+        document.getElementById("lightbox-img").src = img.src;
+        document.getElementById("lightbox").style.display = "flex";
+      });
+      gallery.appendChild(img);
+    }
+    document.getElementById("lightbox").addEventListener("click", ()=>{
+      document.getElementById("lightbox").style.display = "none";
+    });
 
-/* Theme + Audio */
-const body = document.body;
-const themeBtn = document.getElementById("theme-toggle");
-const bg = document.querySelector(".background");
-const audioPlayer = document.getElementById("theme-audio");
+    /* Heart Button Logic */
+    const heartPopup = document.getElementById("heart-popup");
+    document.getElementById("send-heart").addEventListener("click", ()=>{
+      heartPopup.style.display = "block";
+    });
 
-const daySong = "Assets/One Love (Official Audio).mp3";
-const nightSong = "Assets/One Kiss (Official Video).mp3";
+    document.getElementById("confirm-heart").addEventListener("click", ()=>{
+      heartPopup.style.display = "none";
 
-/* Load saved theme */
-window.addEventListener("load", ()=>{
-  const savedTheme = localStorage.getItem("theme");
-  if(savedTheme === "night"){
-    body.classList.add("night-theme");
-    bg.style.backgroundImage = "url('Assets/NightBG.jpg')";
-    themeBtn.textContent = "☀️";
-    audioPlayer.src = nightSong;
-  } else {
-    body.classList.add("day-theme");
-    bg.style.backgroundImage = "url('Assets/DayBG.jpg')";
-    themeBtn.textContent = "🌙";
-    audioPlayer.src = daySong;
-  }
-  audioPlayer.play().catch(()=>{});
-});
+      // Example Mail API Request
+      fetch("https://your-api-endpoint/send-hearts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "Infinite hearts from Album page 💖" })
+      }).then(res => console.log("Hearts sent!"))
+        .catch(err => console.error("Error:", err));
 
-/* Toggle Theme */
-themeBtn.addEventListener("click", ()=>{
-  if(body.classList.contains("day-theme")){
-    body.classList.remove("day-theme");
-    body.classList.add("night-theme");
-    bg.style.backgroundImage = "url('Assets/NightBG.jpg')";
-    themeBtn.textContent = "☀️";
-    audioPlayer.src = nightSong;
-    localStorage.setItem("theme","night");
-  } else {
-    body.classList.remove("night-theme");
-    body.classList.add("day-theme");
-    bg.style.backgroundImage = "url('Assets/DayBG.jpg')";
-    themeBtn.textContent = "🌙";
-    audioPlayer.src = daySong;
-    localStorage.setItem("theme","day");
-  }
-  audioPlayer.play().catch(()=>{});
-});
+      // Infinite hearts animation
+      let heartInterval = setInterval(()=>{
+        const h = document.createElement("div");
+        h.className = "flying-heart";
+        h.textContent = "❤️";
+        h.style.left = (Math.random()*window.innerWidth) + "px";
+        h.style.top = (window.innerHeight-50) + "px";
+        h.style.fontSize = (14 + Math.random()*24) + "px";
+        document.body.appendChild(h);
+        setTimeout(()=> h.remove(), 1400);
+      }, 300);
 
-/* Button Functionalities */
-document.getElementById("toggle-buttons").addEventListener("click", ()=>{
-  album.style.display = album.style.display === "none" ? "grid" : "none";
-});
+      // Stop after 10s
+      setTimeout(()=> clearInterval(heartInterval), 10000);
+    });
 
-/* Heart Button Logic */
-const heartPopup = document.getElementById("heart-popup");
-document.getElementById("send-heart").addEventListener("click", ()=>{
-  heartPopup.style.display = "block";
-});
-document.getElementById("confirm-heart").addEventListener("click", ()=>{
-  heartPopup.style.display = "none";
-  // Infinite hearts animation
-  setInterval(()=>{
-    const h = document.createElement("div");
-    h.className = "flying-heart";
-    h.textContent = "❤️";
-    h.style.left = (Math.random()*window.innerWidth) + "px";
-    h.style.top = (window.innerHeight-50) + "px";
-    h.style.fontSize = (14 + Math.random()*24) + "px";
-    document.body.appendChild(h);
-    setTimeout(()=> h.remove(), 1400);
-  }, 300);
-  // Redirect to mail/comingsoon
-  window.location.href = "comingsoon.html";
-});
+    /* Stars */
+    document.getElementById("send-star").addEventListener("click", ()=>{
+      const star = document.createElement("div");
+      star.textContent = "⭐";
+      star.style.position = "fixed";
+      star.style.left = (Math.random()*window.innerWidth)+"px";
+      star.style.top = (Math.random()*window.innerHeight)+"px";
+      star.style.fontSize = "24px";
+      document.body.appendChild(star);
+      setTimeout(()=> star.remove(), 2000);
+    });
 
-document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
-document.getElementById("about").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
-</script>
+    /* Petals */
+    document.getElementById("send-petal").addEventListener("click", ()=>{
+      const petal = document.createElement("div");
+      petal.textContent = "🌸";
+      petal.style.position = "fixed";
+      petal.style.left = (Math.random()*window.innerWidth)+"px";
+      petal.style.top = "0px";
+      petal.style.fontSize = "20px";
+      petal.style.animation = "fall 3s linear";
+      document.body.appendChild(petal);
+      setTimeout(()=> petal.remove(), 3000);
+    });
+
+    /* Petal Falling Animation */
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes fall {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(100vh); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    /* Init */
+    window.addEventListener("load", loadThemeState);
+  </script>
 </body>
 </html>
