@@ -61,16 +61,6 @@
 </head>
 <body class="day-theme">
 
-<!-- PASSWORD -->
-<script>
-  let password = prompt("Enter the password to open the site:");
-  if(password !== "PratyNoor1517"){
-    alert("Wrong password! Redirecting...");
-    window.location.href = "404.html";
-    throw "Access Denied";
-  }
-</script>
-
 <div class="background"></div>
 <div class="gradient-overlay"></div>
 
@@ -118,6 +108,23 @@ const heartBtn = document.getElementById("send-heart");
 const infiniteBtn = document.getElementById("infinite-heart-btn");
 const audioPlayer = document.getElementById("theme-audio");
 
+// 🎵 Songs
+const daySong = "Assets/One Love (Official Audio).mp3";
+const nightSong = "Assets/One Kiss (Official Video).mp3";
+
+// ✅ PASSWORD with music start
+let password = prompt("Enter the password to open the site:");
+if(password !== "PratyNoor1517"){
+  alert("Wrong password! Redirecting...");
+  window.location.href = "404.html";
+  throw "Access Denied";
+} else {
+  // Start day theme visuals + music
+  generatePetals();
+  audioPlayer.src = daySong;
+  audioPlayer.play();
+}
+
 // Floating hearts
 function createHeart(){ const h=document.createElement("div"); h.className="heart"; h.textContent="❤️"; h.style.left=Math.random()*window.innerWidth+"px"; h.style.fontSize=(Math.random()*20+10)+"px"; document.body.appendChild(h); setTimeout(()=>h.remove(),8000);}
 setInterval(createHeart,1500);
@@ -131,24 +138,19 @@ function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove())
 function addSticker(){ const st=document.createElement("img"); st.src="Assets/Sticker.png"; st.className="sticker"; st.style.top=Math.random()*(window.innerHeight-100)+"px"; st.style.left=Math.random()*(window.innerWidth-100)+"px"; document.body.appendChild(st);}
 addSticker();
 
-// Default Day theme
-generatePetals();
-audioPlayer.src = "Assets/One Love (Official Audio).mp3";
-audioPlayer.play();
-
-// Theme toggle
+// 🌙 Theme toggle with song switch
 function toggleTheme(){
   if(body.classList.contains("day-theme")){
     body.classList.remove("day-theme"); body.classList.add("night-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
     clearPetals(); generateStars();
-    audioPlayer.src = "Assets/One Kiss (Official Video).mp3";
+    audioPlayer.src = nightSong;
     audioPlayer.play();
   } else {
     body.classList.remove("night-theme"); body.classList.add("day-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
     clearStars(); generatePetals();
-    audioPlayer.src = "Assets/One Love (Official Audio).mp3";
+    audioPlayer.src = daySong;
     audioPlayer.play();
   }
 }
@@ -215,13 +217,13 @@ document.getElementById("about").addEventListener("click", ()=>{ window.location
 // Box 1 → redirect to Coming Soon
 document.getElementById("box1").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 
-// Box 2 → Lekh (FIXED → exact case)
+// Box 2 → Lekh
 document.getElementById("box2").addEventListener("click", ()=>{ window.location.href="Lekh.html"; });
 
 // Box 3 → Album
 document.getElementById("box3").addEventListener("click", ()=>{ window.location.href="Album.html"; });
 
-// Box 4 → Socials (Coming Soon for now)
+// Box 4 → Socials
 document.getElementById("box4").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 
 </script>
