@@ -1,1 +1,342 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>PratyNooroverse❤️</title> <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> <style> body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: Arial,sans-serif; transition: background 1s ease; } /* Hide main content until password entered */ #main-content { display:none; } #password-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,1); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; color:white; } #password-overlay input { padding:10px; border-radius:8px; border:none; font-size:16px; margin-bottom:10px; } #password-overlay button { padding:10px 20px; border:none; border-radius:8px; font-size:16px; cursor:pointer; background:#ff0077; color:white; } .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); } .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; } .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:28px; color:white; padding:10px 0; z-index:5; } .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; } .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; } .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); } .button-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:20px; max-width:1000px; margin:150px auto 100px auto; justify-items:center; } .square-button { width:150px; height:180px; background-color: rgba(255,255,255,0.3); border-radius:20px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; transition: transform 0.3s, box-shadow 0.3s; padding:8px; } .square-button:hover { transform: scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.3); } .square-button img { width:100%; height:130px; object-fit:cover; border-radius:15px; } .square-button span { margin-top:6px; font-size:16px; font-weight:bold; text-align:center; } body.day-theme .square-button span { color:black; } body.night-theme .square-button span { color:white; } .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; } .heart { position:absolute; color: rgba(255,0,100,0.6); font-size:20px; animation: floatUp 8s linear infinite; } @keyframes floatUp { 0% { transform:translateY(100vh) scale(0.5); opacity:0; } 30% { opacity:1; } 100% { transform:translateY(-10vh) scale(1.2); opacity:0; } } .petal { position:absolute; font-size:20px; opacity:0.8; animation: fallPetal 10s linear infinite; color:pink; } @keyframes fallPetal { 0% { transform: translateY(-10vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 100% { transform: translateY(110vh) rotate(360deg); opacity:0; } } .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; } @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} } .sticker { position:absolute; width:80px; animation: floatSticker 20s linear infinite; } @keyframes floatSticker { 0% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(50vw,50vh) rotate(180deg); } 100% { transform:translate(0,0) rotate(360deg); } } </style> </head> <body class="day-theme"> <!-- Password Gate --> <div id="password-overlay"> <h2>Enter Password to Continue</h2> <input type="password" id="site-password" placeholder="Enter password"> <button onclick="checkPassword()">Enter</button> </div> <!-- Main Website Content (hidden until login) --> <div id="main-content"> <div class="background"></div> <div class="gradient-overlay"></div> <div class="bottom-strip">Praty loves you Noor</div> <div class="left-strip"> <button id="toggle-buttons">👁️</button> <button id="send-heart">❤️</button> <button id="surprise-popup">💌</button> <button id="about">ℹ️</button> </div> <button class="theme-toggle" onclick="toggleTheme()">🌙</button> <div class="button-container" id="main-buttons"> <div class="square-button" id="box1"> <img src="Assets/PratyNoorIMG.jpg" alt="PratyNoor"> <span>PratyNoor</span> </div> <div class="square-button" id="box2"> <img src="Assets/CanvasIMG.jpg" alt="Lekh"> <span>Lekh</span> </div> <div class="square-button" id="box3"> <img src="Assets/AlbumIMG.jpg" alt="Album"> <span>Album</span> </div> <div class="square-button" id="box4"> <img src="Assets/OurSocialsIMG.jpg" alt="Our Socials"> <span>Our Socials</span> </div> </div> </div> <audio id="theme-audio" loop></audio> <script> const body = document.body; const mainContent = document.getElementById("main-content"); const audioPlayer = document.getElementById("theme-audio"); const daySong = "Assets/One Love (Official Audio).mp3"; const nightSong = "Assets/One Kiss (Official Video).mp3"; function checkPassword(){ const entered = document.getElementById("site-password").value; if(entered === "PratyNoor1517"){ document.getElementById("password-overlay").style.display="none"; mainContent.style.display="block"; // show website generatePetals(); audioPlayer.src = daySong; audioPlayer.play(); } else { alert("Wrong password!"); window.location.href="404.html"; } } function createHeart(){ const h=document.createElement("div"); h.className="heart"; h.textContent="❤️"; h.style.left=Math.random()*window.innerWidth+"px"; h.style.fontSize=(Math.random()*20+10)+"px"; document.body.appendChild(h); setTimeout(()=>h.remove(),8000);} setInterval(createHeart,1500); function generatePetals(){ clearPetals(); for(let i=0;i<15;i++){ const p=document.createElement("div"); p.className="petal"; p.textContent="🌸"; p.style.left=Math.random()*window.innerWidth+"px"; p.style.fontSize=(Math.random()*15+15)+"px"; p.style.animationDuration=(8+Math.random()*5)+"s"; document.body.appendChild(p);} } function clearPetals(){ document.querySelectorAll(".petal").forEach(p=>p.remove()); } function generateStars(){ clearStars(); for(let i=0;i<80;i++){ const s=document.createElement("div"); s.className="star"; s.style.width=s.style.height=Math.random()*3+"px"; s.style.top=Math.random()*window.innerHeight+"px"; s.style.left=Math.random()*window.innerWidth+"px"; document.body.appendChild(s);} } function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove()); } function addSticker(){ const st=document.createElement("img"); st.src="Assets/Sticker.png"; st.className="sticker"; st.style.top=Math.random()*(window.innerHeight-100)+"px"; st.style.left=Math.random()*(window.innerWidth-100)+"px"; document.body.appendChild(st);} addSticker(); function toggleTheme(){ if(body.classList.contains("day-theme")){ body.classList.remove("day-theme"); body.classList.add("night-theme"); document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')"; clearPetals(); generateStars(); audioPlayer.src = nightSong; audioPlayer.play(); } else { body.classList.remove("night-theme"); body.classList.add("day-theme"); document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')"; clearStars(); generatePetals(); audioPlayer.src = daySong; audioPlayer.play(); } } document.getElementById("toggle-buttons").addEventListener("click", ()=>{ const btnContainer = document.getElementById("main-buttons"); btnContainer.style.display = btnContainer.style.display !== "none" ? "none" : "grid"; }); document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; }); document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; }); document.getElementById("box1").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; }); document.getElementById("box2").addEventListener("click", ()=>{ window.location.href="Lekh.html"; }); document.getElementById("box3").addEventListener("click", ()=>{ window.location.href="Album.html"; }); document.getElementById("box4").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PratyNooroverse❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: Arial, sans-serif; transition: background 1s ease; }
+
+  /* Hide main content until password entered */
+  #main-content { display:none; }
+
+  #password-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,1); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; z-index:200; color:white;
+  }
+  #password-overlay input {
+    padding:10px; border-radius:8px; border:none; font-size:16px; margin-bottom:10px;
+  }
+  #password-overlay button {
+    padding:10px 20px; border:none; border-radius:8px; font-size:16px;
+    cursor:pointer; background:#ff0077; color:white;
+  }
+
+  .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
+  .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; }
+
+  .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:28px; color:white; padding:10px 0; z-index:5; }
+
+  .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; }
+  .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; }
+  .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); }
+
+  .button-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:20px; max-width:1000px; margin:150px auto 100px auto; justify-items:center; }
+  
+  .square-button {
+    width:150px; height:180px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius:20px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding:8px;
+  }
+  .square-button:hover { transform: scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+  .square-button img { width:100%; height:130px; object-fit:cover; border-radius:15px; }
+  .square-button span { margin-top:6px; font-size:16px; font-weight:bold; text-align:center; }
+
+  body.day-theme .square-button span { color:black; }
+  body.night-theme .square-button span { color:white; }
+
+  .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
+
+  /* floating background hearts */
+  .heart { position:absolute; color: rgba(255,0,100,0.6); font-size:20px; animation: floatUp 8s linear infinite; pointer-events:none; }
+  @keyframes floatUp { 0% { transform:translateY(100vh) scale(0.5); opacity:0; } 30% { opacity:1; } 100% { transform:translateY(-10vh) scale(1.2); opacity:0; } }
+
+  /* petals & stars */
+  .petal { position:absolute; font-size:20px; opacity:0.8; animation: fallPetal 10s linear infinite; color:pink; pointer-events:none; }
+  @keyframes fallPetal { 0% { transform: translateY(-10vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 100% { transform: translateY(110vh) rotate(360deg); opacity:0; } }
+  .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; pointer-events:none; }
+  @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
+
+  /* sticker */
+  .sticker { position:absolute; width:80px; animation: floatSticker 20s linear infinite; pointer-events:none; }
+  @keyframes floatSticker { 0% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(50vw,50vh) rotate(180deg); } 100% { transform:translate(0,0) rotate(360deg); } }
+
+  /* flying hearts (user-triggered) */
+  .flying-heart {
+    position:absolute; font-size:20px; color: rgba(255,0,100,0.9);
+    animation: flyHeart 1.2s ease-out forwards; pointer-events:none;
+  }
+  @keyframes flyHeart {
+    0% { transform: translateY(0) scale(0.6); opacity:1; }
+    100% { transform: translateY(-220px) scale(1.2); opacity:0; }
+  }
+
+  /* infinite heart button that appears after send-heart */
+  #infinite-heart-btn {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.9);
+    color: white; border:none; border-radius:15px; cursor:pointer; z-index:120; display:none;
+  }
+</style>
+</head>
+<body class="day-theme">
+
+<!-- Password Gate -->
+<div id="password-overlay">
+  <h2>Enter Password to Continue</h2>
+  <input type="password" id="site-password" placeholder="Enter password">
+  <button onclick="checkPassword()">Enter</button>
+</div>
+
+<!-- Main Website Content (hidden until login) -->
+<div id="main-content">
+  <div class="background"></div>
+  <div class="gradient-overlay"></div>
+
+  <div class="bottom-strip">Praty loves you Noor</div>
+
+  <div class="left-strip">
+    <button id="toggle-buttons">👁️</button>
+    <button id="send-heart">❤️</button>
+    <button id="surprise-popup">💌</button>
+    <button id="about">ℹ️</button>
+  </div>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+  <div class="button-container" id="main-buttons">
+    <div class="square-button" id="box1">
+      <img src="Assets/PratyNoorIMG.jpg" alt="PratyNoor">
+      <span>PratyNoor</span>
+    </div>
+    <div class="square-button" id="box2">
+      <img src="Assets/CanvasIMG.jpg" alt="Lekh">
+      <span>Lekh</span>
+    </div>
+    <div class="square-button" id="box3">
+      <img src="Assets/AlbumIMG.jpg" alt="Album">
+      <span>Album</span>
+    </div>
+    <div class="square-button" id="box4">
+      <img src="Assets/OurSocialsIMG.jpg" alt="Our Socials">
+      <span>Our Socials</span>
+    </div>
+  </div>
+</div>
+
+<!-- Infinite Heart Button -->
+<button id="infinite-heart-btn">Press to send INFINITE Hearts to your Praty</button>
+
+<!-- Audio -->
+<audio id="theme-audio" loop></audio>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+/* -----------------------
+   Basic references & songs
+   ----------------------- */
+const body = document.body;
+const mainContent = document.getElementById("main-content");
+const audioPlayer = document.getElementById("theme-audio");
+const sendHeartBtn = document.getElementById("send-heart");
+const infiniteBtn = document.getElementById("infinite-heart-btn");
+const daySong = "Assets/One Love (Official Audio).mp3";
+const nightSong = "Assets/One Kiss (Official Video).mp3";
+
+/* -----------------------
+   EmailJS init (for infinite)
+   ----------------------- */
+emailjs.init("JGhME2cskwslibmXv");
+
+/* -----------------------
+   Password logic (user MUST click Enter)
+   ----------------------- */
+function checkPassword(){
+  const entered = document.getElementById("site-password").value;
+  if(entered === "PratyNoor1517"){
+    document.getElementById("password-overlay").style.display="none";
+    mainContent.style.display="block"; // reveal the site
+    generatePetals();
+    audioPlayer.src = daySong;
+    // try to play — user clicked Enter, so browsers permit autoplay
+    audioPlayer.play().catch(()=>{ /* ignore play rejection */ });
+  } else {
+    alert("Wrong password!");
+    window.location.href="404.html";
+  }
+}
+
+/* -----------------------
+   Floating background hearts (decorative)
+   ----------------------- */
+function createBackgroundHeart(){
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = "❤️";
+  h.style.left = Math.random() * window.innerWidth + "px";
+  h.style.fontSize = (Math.random() * 20 + 10) + "px";
+  document.body.appendChild(h);
+  setTimeout(()=> h.remove(), 8000);
+}
+setInterval(createBackgroundHeart, 1500);
+
+/* -----------------------
+   Petals / Stars / Sticker
+   ----------------------- */
+function generatePetals(){ clearPetals(); for(let i=0;i<12;i++){ const p=document.createElement("div"); p.className="petal"; p.textContent="🌸"; p.style.left=Math.random()*window.innerWidth+"px"; p.style.fontSize=(Math.random()*15+15)+"px"; p.style.animationDuration=(8+Math.random()*5)+"s"; document.body.appendChild(p);} }
+function clearPetals(){ document.querySelectorAll(".petal").forEach(p=>p.remove()); }
+
+function generateStars(){ clearStars(); for(let i=0;i<60;i++){ const s=document.createElement("div"); s.className="star"; s.style.width=s.style.height=(Math.random()*3+1)+"px"; s.style.top=Math.random()*window.innerHeight+"px"; s.style.left=Math.random()*window.innerWidth+"px"; document.body.appendChild(s);} }
+function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove()); }
+
+function addSticker(){ const st=document.createElement("img"); st.src="Assets/Sticker.png"; st.className="sticker"; st.style.top=Math.random()*(window.innerHeight-100)+"px"; st.style.left=Math.random()*(window.innerWidth-100)+"px"; document.body.appendChild(st);}
+addSticker();
+
+/* -----------------------
+   Theme toggle & persistence
+   ----------------------- */
+function toggleTheme(){
+  if(body.classList.contains("day-theme")){
+    body.classList.remove("day-theme"); body.classList.add("night-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
+    clearPetals(); generateStars();
+    audioPlayer.src = nightSong; audioPlayer.play().catch(()=>{});
+  } else {
+    body.classList.remove("night-theme"); body.classList.add("day-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
+    clearStars(); generatePetals();
+    audioPlayer.src = daySong; audioPlayer.play().catch(()=>{});
+  }
+  // optional: persist theme & song for other pages
+  try {
+    localStorage.setItem("theme", body.classList.contains("day-theme") ? "day" : "night");
+    localStorage.setItem("song", audioPlayer.src);
+  } catch(e){}
+}
+
+/* -----------------------
+   send-heart (visual burst) & reveal infinite button
+   ----------------------- */
+sendHeartBtn.addEventListener("click", () => {
+  // small immediate burst of flying hearts
+  const burstCount = 18;
+  for(let i=0;i<burstCount;i++){
+    const h = document.createElement("div");
+    h.className = "flying-heart";
+    h.textContent = "❤️";
+    // spawn near center but random offset
+    const centerX = window.innerWidth / 2 + (Math.random() * 200 - 100);
+    const centerY = window.innerHeight / 2 + (Math.random() * 120 - 60);
+    h.style.left = centerX + "px";
+    h.style.top = centerY + "px";
+    h.style.fontSize = (14 + Math.random() * 24) + "px";
+    document.body.appendChild(h);
+    setTimeout(()=> h.remove(), 1400);
+  }
+  // reveal INFINITE button
+  infiniteBtn.style.display = "block";
+});
+
+/* -----------------------
+   infinite-heart: send EmailJS + bigger flood + message
+   ----------------------- */
+infiniteBtn.addEventListener("click", () => {
+  // disable further clicks quickly
+  infiniteBtn.disabled = true;
+  // send email
+  emailjs.send("service_a7lopsi", "template_hh35k3a", {
+    to_email: "pratyyynooor@gmail.com",
+    message: "Noor clicked the INFINITE heart at " + new Date().toLocaleString()
+  }).then(() => {
+    console.log("Infinite heart email sent!");
+  }).catch(err => {
+    console.error("EmailJS error:", err);
+  });
+
+  // flood hearts
+  const floodCount = 40;
+  const rect = infiniteBtn.getBoundingClientRect();
+  const startX = rect.left + rect.width/2;
+  const startY = rect.top + rect.height/2;
+  for(let i=0;i<floodCount;i++){
+    const h = document.createElement("div");
+    h.className = "flying-heart";
+    h.textContent = "❤️";
+    // random offset from button center
+    const offsetX = (Math.random() * 300 - 150);
+    const offsetY = (Math.random() * 160 - 80);
+    h.style.left = (startX + offsetX) + "px";
+    h.style.top = (startY + offsetY) + "px";
+    h.style.fontSize = (12 + Math.random() * 30) + "px";
+    document.body.appendChild(h);
+    setTimeout(()=> h.remove(), 1600);
+  }
+
+  // small temporary message near button
+  const msg = document.createElement("div");
+  msg.textContent = "HEARTS FLOODED!";
+  msg.style.position = "fixed";
+  msg.style.left = startX + "px";
+  msg.style.top = (startY - 60) + "px";
+  msg.style.transform = "translateX(-50%)";
+  msg.style.background = "rgba(255,255,255,0.9)";
+  msg.style.color = "rgba(255,0,100,0.95)";
+  msg.style.padding = "8px 12px";
+  msg.style.borderRadius = "12px";
+  msg.style.fontWeight = "700";
+  msg.style.zIndex = "130";
+  msg.style.opacity = "0";
+  msg.style.transition = "opacity 0.25s";
+  document.body.appendChild(msg);
+  // fade in/out
+  requestAnimationFrame(()=>{ msg.style.opacity = "1"; });
+  setTimeout(()=>{ msg.style.opacity = "0"; setTimeout(()=> msg.remove(), 300); }, 1600);
+
+  // hide infinite button after flood
+  setTimeout(()=> {
+    infiniteBtn.style.display = "none";
+    infiniteBtn.disabled = false;
+  }, 800);
+});
+
+/* -----------------------
+   other simple controls & navigation
+   ----------------------- */
+document.getElementById("toggle-buttons").addEventListener("click", ()=>{
+  const btnContainer = document.getElementById("main-buttons");
+  btnContainer.style.display = btnContainer.style.display !== "none" ? "none" : "grid";
+});
+document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+document.getElementById("box1").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+document.getElementById("box2").addEventListener("click", ()=>{ window.location.href="Lekh.html"; });
+document.getElementById("box3").addEventListener("click", ()=>{ window.location.href="Album.html"; });
+document.getElementById("box4").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
+
+/* -----------------------
+   Optional: restore theme/song across pages on load
+   ----------------------- */
+window.addEventListener("load", ()=> {
+  const savedTheme = localStorage.getItem("theme");
+  const savedSong = localStorage.getItem("song");
+  if(savedTheme === "night"){
+    body.classList.remove("day-theme"); body.classList.add("night-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
+  } else {
+    body.classList.remove("night-theme"); body.classList.add("day-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
+  }
+  if(savedSong){
+    audioPlayer.src = savedSong;
+  }
+});
+</script>
+</body>
+</html>
