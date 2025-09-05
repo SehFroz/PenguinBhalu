@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Album - PRATYNOOROVERSE</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; height:100vh; overflow-x:hidden; font-family: Arial,sans-serif; transition: background 1s ease; }
+  .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
+  .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; }
+
+  .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; }
+  .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; }
+  .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); }
+
+  .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
+
+  /* Album grid */
+  .album-container { max-width:1200px; margin:120px auto 50px auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:15px; padding:0 15px; z-index:5; position:relative; }
+  .album-container img { width:100%; height:250px; object-fit:cover; border-radius:12px; cursor:pointer; transition: transform 0.3s, box-shadow 0.3s; }
+  .album-container img:hover { transform:scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
+
+  /* Modal viewer */
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:50; }
+  .modal img { max-width:90%; max-height:90%; border-radius:12px; }
+  .modal:active { display:none; }
+
+  .petal { position:absolute; font-size:20px; opacity:0.8; animation: fallPetal 10s linear infinite; color:pink; }
+  @keyframes fallPetal { 0% { transform: translateY(-10vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 100% { transform: translateY(110vh) rotate(360deg); opacity:0; } }
+
+  .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; }
+  @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
+</style>
+</head>
+<body class="day-theme">
+
+<div class="background"></div>
+<div class="gradient-overlay"></div>
+
+<!-- Left strip tools -->
+<div class="left-strip">
+  <button onclick="toggleButtons()">👁️</button>
+  <button onclick="sendHeart()">❤️</button>
+  <button onclick="window.location.href='comingsoon.html'">💌</button>
+  <button onclick="window.location.href='comingsoon.html'">ℹ️</button>
+</div>
+
+<!-- Theme toggle -->
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+<!-- Album grid -->
+<div class="album-container" id="album"></div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <img id="modal-img" src="">
+</div>
+
+<script>
+// Generate album images
+const album = document.getElementById("album");
+for (let i = 1; i <= 29; i++) {
+  const img = document.createElement("img");
+  img.src = `Assets/PN${i}.jpg`;
+  img.alt = `PN${i}`;
+  img.onclick = () => openModal(img.src);
+  album.appendChild(img);
+}
+
+// Modal functionality
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+function openModal(src) {
+  modal.style.display = "flex";
+  modalImg.src = src;
+}
+modal.onclick = () => { modal.style.display = "none"; };
+
+// Theme toggle
+function generatePetals(){ clearPetals(); for(let i=0;i<15;i++){ const p=document.createElement("div"); p.className="petal"; p.textContent="🌸"; p.style.left=Math.random()*window.innerWidth+"px"; p.style.fontSize=(Math.random()*15+15)+"px"; p.style.animationDuration=(8+Math.random()*5)+"s"; document.body.appendChild(p);} }
+function clearPetals(){ document.querySelectorAll(".petal").forEach(p=>p.remove()); }
+function generateStars(){ clearStars(); for(let i=0;i<80;i++){ const s=document.createElement("div"); s.className="star"; s.style.width=s.style.height=Math.random()*3+"px"; s.style.top=Math.random()*window.innerHeight+"px"; s.style.left=Math.random()*window.innerWidth+"px"; document.body.appendChild(s);} }
+function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove()); }
+
+function toggleTheme(){
+  if(document.body.classList.contains("day-theme")){
+    document.body.classList.remove("day-theme"); document.body.classList.add("night-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
+    clearPetals(); generateStars();
+  } else {
+    document.body.classList.remove("night-theme"); document.body.classList.add("day-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
+    clearStars(); generatePetals();
+  }
+}
+
+// Default = petals
+generatePetals();
+
+// Placeholder heart + toggleButtons
+function sendHeart(){ alert("❤️ Hearts sent to Noor! ❤️"); }
+function toggleButtons(){ alert("👁️ Toggle effect placeholder"); }
+</script>
+</body>
+</html>
