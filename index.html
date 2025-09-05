@@ -90,7 +90,7 @@
 <div id="password-overlay">
   <h2>Enter Password to Continue</h2>
   <input type="password" id="site-password" placeholder="Enter password">
-  <button onclick="checkPassword()">Enter</button>
+  <button id="password-enter-btn">Enter</button>
 </div>
 
 <!-- Main Website Content (hidden until login) -->
@@ -107,7 +107,8 @@
     <button id="about">ℹ️</button>
   </div>
 
-  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  <!-- theme toggle has an id so JS updates its icon -->
+  <button class="theme-toggle" id="theme-toggle-btn">🌙</button>
 
   <div class="button-container" id="main-buttons">
     <div class="square-button" id="box1">
@@ -147,6 +148,8 @@ const mainContent = document.getElementById("main-content");
 const audioPlayer = document.getElementById("theme-audio");
 const sendHeartBtn = document.getElementById("send-heart");
 const infiniteBtn = document.getElementById("infinite-heart-btn");
+const themeToggleBtn = document.getElementById("theme-toggle-btn");
+
 const daySong = "Assets/One Love (Official Audio).mp3";
 const nightSong = "Assets/One Kiss (Official Video).mp3";
 
@@ -156,17 +159,35 @@ const nightSong = "Assets/One Kiss (Official Video).mp3";
 emailjs.init("JGhME2cskwslibmXv");
 
 /* -----------------------
+   Helper: update theme toggle icon
+   ----------------------- */
+function updateThemeToggleIcon(){
+  // If it's day-theme show moon icon (meaning switch to night)
+  if(body.classList.contains("day-theme")){
+    themeToggleBtn.textContent = "🌙";
+  } else {
+    // if night-theme show sun icon (meaning switch to day)
+    themeToggleBtn.textContent = "☀️";
+  }
+}
+
+/* -----------------------
    Password logic (user MUST click Enter)
    ----------------------- */
+document.getElementById("password-enter-btn").addEventListener("click", checkPassword);
+
 function checkPassword(){
   const entered = document.getElementById("site-password").value;
   if(entered === "PratyNoor1517"){
     document.getElementById("password-overlay").style.display="none";
     mainContent.style.display="block"; // reveal the site
     generatePetals();
-    audioPlayer.src = daySong;
-    // try to play — user clicked Enter, so browsers permit autoplay
-    audioPlayer.play().catch(()=>{ /* ignore play rejection */ });
+    // set audio source (audio was preloaded from savedSong on load if present)
+    if(!audioPlayer.src) audioPlayer.src = daySong;
+    // user clicked so play should be allowed
+    audioPlayer.play().catch(()=>{ /* ignore if still blocked */ });
+    // ensure toggle icon matches theme
+    updateThemeToggleIcon();
   } else {
     alert("Wrong password!");
     window.location.href="404.html";
@@ -214,12 +235,15 @@ function toggleTheme(){
     clearStars(); generatePetals();
     audioPlayer.src = daySong; audioPlayer.play().catch(()=>{});
   }
-  // optional: persist theme & song for other pages
+  // update icon & persist
+  updateThemeToggleIcon();
   try {
     localStorage.setItem("theme", body.classList.contains("day-theme") ? "day" : "night");
     localStorage.setItem("song", audioPlayer.src);
   } catch(e){}
 }
+// attach to button
+themeToggleBtn.addEventListener("click", toggleTheme);
 
 /* -----------------------
    send-heart (visual burst) & reveal infinite button
@@ -321,7 +345,7 @@ document.getElementById("box3").addEventListener("click", ()=>{ window.location.
 document.getElementById("box4").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 
 /* -----------------------
-   Optional: restore theme/song across pages on load
+   load saved theme/song (do not auto-play until user clicks Enter)
    ----------------------- */
 window.addEventListener("load", ()=> {
   const savedTheme = localStorage.getItem("theme");
@@ -333,9 +357,14 @@ window.addEventListener("load", ()=> {
     body.classList.remove("night-theme"); body.classList.add("day-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
   }
+  // set audio source but don't play (user must click Enter)
   if(savedSong){
     audioPlayer.src = savedSong;
+  } else {
+    audioPlayer.src = daySong;
   }
+  // Ensure toggle icon matches the applied theme
+  updateThemeToggleIcon();
 });
 </script>
 </body>
