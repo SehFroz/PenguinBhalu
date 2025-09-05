@@ -7,6 +7,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 <style>
   body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: Arial,sans-serif; transition: background 1s ease; }
+
+  /* Hide main content until password entered */
+  #main-content { display:none; }
+
+  #password-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,1); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; z-index:100; color:white;
+  }
+  #password-overlay input {
+    padding:10px; border-radius:8px; border:none; font-size:16px; margin-bottom:10px;
+  }
+  #password-overlay button {
+    padding:10px 20px; border:none; border-radius:8px; font-size:16px;
+    cursor:pointer; background:#ff0077; color:white;
+  }
+
   .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
   .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; }
 
@@ -19,15 +36,10 @@
   .button-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:20px; max-width:1000px; margin:150px auto 100px auto; justify-items:center; }
   
   .square-button {
-    width:150px;
-    height:180px;
+    width:150px; height:180px;
     background-color: rgba(255,255,255,0.3);
-    border-radius:20px;
-    cursor:pointer;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
+    border-radius:20px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
     transition: transform 0.3s, box-shadow 0.3s;
     padding:8px;
   }
@@ -39,19 +51,6 @@
   body.night-theme .square-button span { color:white; }
 
   .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
-
-  #password-overlay {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.85); display:flex; flex-direction:column;
-    align-items:center; justify-content:center; z-index:50; color:white;
-  }
-  #password-overlay input {
-    padding:10px; border-radius:8px; border:none; font-size:16px; margin-bottom:10px;
-  }
-  #password-overlay button {
-    padding:10px 20px; border:none; border-radius:8px; font-size:16px;
-    cursor:pointer; background:#ff0077; color:white;
-  }
 
   .heart { position:absolute; color: rgba(255,0,100,0.6); font-size:20px; animation: floatUp 8s linear infinite; }
   @keyframes floatUp { 0% { transform:translateY(100vh) scale(0.5); opacity:0; } 30% { opacity:1; } 100% { transform:translateY(-10vh) scale(1.2); opacity:0; } }
@@ -65,61 +64,64 @@
 </head>
 <body class="day-theme">
 
+<!-- Password Gate -->
 <div id="password-overlay">
   <h2>Enter Password to Continue</h2>
   <input type="password" id="site-password" placeholder="Enter password">
   <button onclick="checkPassword()">Enter</button>
 </div>
 
-<div class="background"></div>
-<div class="gradient-overlay"></div>
+<!-- Main Website Content (hidden until login) -->
+<div id="main-content">
+  <div class="background"></div>
+  <div class="gradient-overlay"></div>
 
-<div class="bottom-strip">Praty loves you Noor</div>
+  <div class="bottom-strip">Praty loves you Noor</div>
 
-<div class="left-strip">
-  <button id="toggle-buttons">👁️</button>
-  <button id="send-heart">❤️</button>
-  <button id="surprise-popup">💌</button>
-  <button id="about">ℹ️</button>
-</div>
-
-<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-
-<div class="button-container" id="main-buttons">
-  <div class="square-button" id="box1">
-    <img src="Assets/PratyNoorIMG.jpg" alt="PratyNoor">
-    <span>PratyNoor</span>
+  <div class="left-strip">
+    <button id="toggle-buttons">👁️</button>
+    <button id="send-heart">❤️</button>
+    <button id="surprise-popup">💌</button>
+    <button id="about">ℹ️</button>
   </div>
-  <div class="square-button" id="box2">
-    <img src="Assets/CanvasIMG.jpg" alt="Lekh">
-    <span>Lekh</span>
-  </div>
-  <div class="square-button" id="box3">
-    <img src="Assets/AlbumIMG.jpg" alt="Album">
-    <span>Album</span>
-  </div>
-  <div class="square-button" id="box4">
-    <img src="Assets/OurSocialsIMG.jpg" alt="Our Socials">
-    <span>Our Socials</span>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+  <div class="button-container" id="main-buttons">
+    <div class="square-button" id="box1">
+      <img src="Assets/PratyNoorIMG.jpg" alt="PratyNoor">
+      <span>PratyNoor</span>
+    </div>
+    <div class="square-button" id="box2">
+      <img src="Assets/CanvasIMG.jpg" alt="Lekh">
+      <span>Lekh</span>
+    </div>
+    <div class="square-button" id="box3">
+      <img src="Assets/AlbumIMG.jpg" alt="Album">
+      <span>Album</span>
+    </div>
+    <div class="square-button" id="box4">
+      <img src="Assets/OurSocialsIMG.jpg" alt="Our Socials">
+      <span>Our Socials</span>
+    </div>
   </div>
 </div>
 
 <audio id="theme-audio" loop></audio>
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 const body = document.body;
-const btnContainer = document.getElementById("main-buttons");
+const mainContent = document.getElementById("main-content");
 const audioPlayer = document.getElementById("theme-audio");
 
 const daySong = "Assets/One Love (Official Audio).mp3";
 const nightSong = "Assets/One Kiss (Official Video).mp3";
 
-// ✅ Password check with audio start
 function checkPassword(){
   const entered = document.getElementById("site-password").value;
   if(entered === "PratyNoor1517"){
     document.getElementById("password-overlay").style.display="none";
+    mainContent.style.display="block"; // show website
     generatePetals();
     audioPlayer.src = daySong;
     audioPlayer.play();
@@ -156,6 +158,7 @@ function toggleTheme(){
 }
 
 document.getElementById("toggle-buttons").addEventListener("click", ()=>{
+  const btnContainer = document.getElementById("main-buttons");
   btnContainer.style.display = btnContainer.style.display !== "none" ? "none" : "grid";
 });
 document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
