@@ -132,6 +132,34 @@
     0% { transform: translateY(0) scale(0.6); opacity: 1; }
     100% { transform: translateY(-220px) scale(1.2); opacity: 0; }
   }
+
+  /* Popup box for infinite hearts */
+  .heart-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 200;
+    text-align: center;
+  }
+  .heart-popup button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    background: #ff4d88;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .heart-popup button:hover {
+    background: #e63972;
+  }
 </style>
 </head>
 <body class="day-theme">
@@ -160,6 +188,12 @@
 <div id="lightbox" class="lightbox">
   <a href="#" class="close">&times;</a>
   <img class="lightbox-content" id="lightbox-img">
+</div>
+
+<!-- Heart Popup -->
+<div class="heart-popup" id="heart-popup">
+  <p>💖 Press to send infinite hearts to your Praty 💖</p>
+  <button id="confirm-heart">Send Hearts</button>
 </div>
 
 <audio id="theme-audio" loop></audio>
@@ -236,8 +270,16 @@ themeBtn.addEventListener("click", ()=>{
 document.getElementById("toggle-buttons").addEventListener("click", ()=>{
   album.style.display = album.style.display === "none" ? "grid" : "none";
 });
+
+/* Heart Button Logic */
+const heartPopup = document.getElementById("heart-popup");
 document.getElementById("send-heart").addEventListener("click", ()=>{
-  for(let i=0;i<15;i++){
+  heartPopup.style.display = "block";
+});
+document.getElementById("confirm-heart").addEventListener("click", ()=>{
+  heartPopup.style.display = "none";
+  // Infinite hearts animation
+  setInterval(()=>{
     const h = document.createElement("div");
     h.className = "flying-heart";
     h.textContent = "❤️";
@@ -246,8 +288,11 @@ document.getElementById("send-heart").addEventListener("click", ()=>{
     h.style.fontSize = (14 + Math.random()*24) + "px";
     document.body.appendChild(h);
     setTimeout(()=> h.remove(), 1400);
-  }
+  }, 300);
+  // Redirect to mail/comingsoon
+  window.location.href = "comingsoon.html";
 });
+
 document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
 document.getElementById("about").addEventListener("click", ()=>{ window.location.href = "comingsoon.html"; });
 </script>
