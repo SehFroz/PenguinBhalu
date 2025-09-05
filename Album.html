@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Album - PRATYNOOROVERSE</title>
+<title>Album - PratyNooroverse❤️</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 <style>
-  body { margin:0; padding:0; height:100vh; overflow-x:hidden; font-family: Arial,sans-serif; transition: background 1s ease; }
+  body { margin:0; padding:0; height:100vh; overflow:hidden; font-family: Arial, sans-serif; transition: background 1s ease; }
   .background { position: fixed; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; z-index:-2; transition: background-image 1s ease; background-image: url('Assets/DayBG.jpg'); }
   .gradient-overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.6; background-size:400% 400%; }
+
+  .bottom-strip { position: fixed; bottom:0; width:100%; text-align:center; font-family: 'Dancing Script', cursive; font-size:28px; color:white; padding:10px 0; z-index:5; }
 
   .left-strip { position: fixed; left:0; top:100px; display:flex; flex-direction:column; gap:15px; padding:10px; z-index:10; }
   .left-strip button { font-size:24px; border:none; background: rgba(255,255,255,0.5); cursor:pointer; border-radius:10px; padding:5px 8px; transition: transform 0.2s, background 0.2s; }
@@ -16,31 +18,7 @@
 
   .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
 
-  /* Album grid */
-  .album-container { max-width:1200px; margin:120px auto 50px auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:15px; padding:0 15px; z-index:5; position:relative; }
-  .album-container img { width:100%; height:250px; object-fit:cover; border-radius:12px; cursor:pointer; transition: transform 0.3s, box-shadow 0.3s; }
-  .album-container img:hover { transform:scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
-
-  /* Modal viewer */
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:50; }
-  .modal img { max-width:90%; max-height:90%; border-radius:12px; }
-  .modal:active { display:none; }
-
-  .petal { position:absolute; font-size:20px; opacity:0.8; animation: fallPetal 10s linear infinite; color:pink; }
-  @keyframes fallPetal { 0% { transform: translateY(-10vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 100% { transform: translateY(110vh) rotate(360deg); opacity:0; } }
-
-  .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; }
-  @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
-
-  /* Infinite heart button + flying hearts */
-  #infinite-heart-btn {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8);
-    color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none;
-  }
-  .flying-heart { position:absolute; font-size:20px; color: rgba(255,0,100,0.7); animation: flyHeart 1s ease-out forwards; }
-  @keyframes flyHeart { 0% { transform: translate(0,0) scale(0.5); opacity:1; } 100% { transform: translate(0,-150px) scale(1.2); opacity:0; } }
-
+  .album-content { margin-top:120px; text-align:center; color:white; font-size:24px; }
 </style>
 </head>
 <body class="day-theme">
@@ -48,7 +26,8 @@
 <div class="background"></div>
 <div class="gradient-overlay"></div>
 
-<!-- Left strip tools -->
+<div class="bottom-strip">Noor’s Album ❤️</div>
+
 <div class="left-strip">
   <button id="toggle-buttons">👁️</button>
   <button id="send-heart">❤️</button>
@@ -56,127 +35,61 @@
   <button id="about">ℹ️</button>
 </div>
 
-<!-- Theme toggle -->
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
-<!-- Album grid wrapper (toggle with 👁️) -->
-<div id="content-wrap">
-  <div class="album-container" id="album"></div>
+<div class="album-content">
+  <h1>Welcome to the Album 📸</h1>
+  <p>Your memories will appear here...</p>
 </div>
 
-<!-- Modal -->
-<div class="modal" id="modal">
-  <img id="modal-img" src="">
-</div>
+<audio id="theme-audio" loop></audio>
 
-<!-- Infinite Heart Button -->
-<button id="infinite-heart-btn">Press to send INFINITE Hearts to your Praty</button>
-
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-// Generate album images
-const album = document.getElementById("album");
-for (let i = 1; i <= 29; i++) {
-  const img = document.createElement("img");
-  img.src = `Assets/PN${i}.jpg`;
-  img.alt = `PN${i}`;
-  img.onclick = () => openModal(img.src);
-  album.appendChild(img);
-}
+const body = document.body;
+const audioPlayer = document.getElementById("theme-audio");
 
-// Modal functionality
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modal-img");
-function openModal(src) {
-  modal.style.display = "flex";
-  modalImg.src = src;
-}
-modal.onclick = () => { modal.style.display = "none"; };
+const daySong = "Assets/One Love (Official Audio).mp3";
+const nightSong = "Assets/One Kiss (Official Video).mp3";
 
-// Theme toggle
-function generatePetals(){ clearPetals(); for(let i=0;i<15;i++){ const p=document.createElement("div"); p.className="petal"; p.textContent="🌸"; p.style.left=Math.random()*window.innerWidth+"px"; p.style.fontSize=(Math.random()*15+15)+"px"; p.style.animationDuration=(8+Math.random()*5)+"s"; document.body.appendChild(p);} }
-function clearPetals(){ document.querySelectorAll(".petal").forEach(p=>p.remove()); }
-function generateStars(){ clearStars(); for(let i=0;i<80;i++){ const s=document.createElement("div"); s.className="star"; s.style.width=s.style.height=Math.random()*3+"px"; s.style.top=Math.random()*window.innerHeight+"px"; s.style.left=Math.random()*window.innerWidth+"px"; document.body.appendChild(s);} }
-function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove()); }
-
-function toggleTheme(){
-  if(document.body.classList.contains("day-theme")){
-    document.body.classList.remove("day-theme"); document.body.classList.add("night-theme");
+/* Restore theme & song from homepage */
+window.addEventListener("load", ()=> {
+  const savedTheme = localStorage.getItem("theme");
+  const savedSong = localStorage.getItem("song");
+  if(savedTheme === "night"){
+    body.classList.remove("day-theme"); body.classList.add("night-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
-    clearPetals(); generateStars();
   } else {
-    document.body.classList.remove("night-theme"); document.body.classList.add("day-theme");
+    body.classList.remove("night-theme"); body.classList.add("day-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
-    clearStars(); generatePetals();
   }
+  if(savedSong){
+    audioPlayer.src = savedSong;
+  } else {
+    audioPlayer.src = daySong; // default
+  }
+  audioPlayer.play().catch(()=>{});
+});
+
+/* Theme toggle */
+function toggleTheme(){
+  if(body.classList.contains("day-theme")){
+    body.classList.remove("day-theme"); body.classList.add("night-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
+    audioPlayer.src = nightSong; audioPlayer.play().catch(()=>{});
+  } else {
+    body.classList.remove("night-theme"); body.classList.add("day-theme");
+    document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
+    audioPlayer.src = daySong; audioPlayer.play().catch(()=>{});
+  }
+  localStorage.setItem("theme", body.classList.contains("day-theme") ? "day" : "night");
+  localStorage.setItem("song", audioPlayer.src);
 }
 
-// Default = petals
-generatePetals();
-
-/* ===== Left strip logic ===== */
-const contentWrap = document.getElementById("content-wrap");
-const heartBtn = document.getElementById("send-heart");
-const infiniteBtn = document.getElementById("infinite-heart-btn");
-
-// 👁️ Toggle all content
-document.getElementById("toggle-buttons").addEventListener("click", ()=>{
-  contentWrap.style.display = (contentWrap.style.display === "none") ? "block" : "none";
-});
-
-// ❤️ Show infinite heart button
-heartBtn.addEventListener("click", ()=>{
-  infiniteBtn.style.display = "block";
-});
-
-// 💌 & ℹ️ redirects
+/* Left panel buttons */
+document.getElementById("toggle-buttons").addEventListener("click", ()=>{ window.location.href="index.html"; });
+document.getElementById("send-heart").addEventListener("click", ()=>{ alert("Hearts will be added here too ❤️"); });
 document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
 document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
-
-// EmailJS init
-emailjs.init("JGhME2cskwslibmXv");
-
-// 💖 Infinite Heart — send email + flying hearts
-infiniteBtn.addEventListener("click", () => {
-  emailjs.send("service_a7lopsi", "template_hh35k3a", {
-    to_email: "pratyyynooor@gmail.com",
-    message: "Noor clicked the INFINITE heart (from Album page) at " + new Date().toLocaleString()
-  }).then(() => { console.log("Infinite heart email sent!"); }).catch(err => console.log("Email error:", err));
-
-  const rect = infiniteBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  infiniteBtn.style.display = "none";
-
-  for (let i = 0; i < 25; i++) {
-    const h = document.createElement("div");
-    h.className = "flying-heart";
-    const offsetX = Math.random() * 100 - 50;
-    const offsetY = Math.random() * 100 - 50;
-    h.style.left = centerX + offsetX + "px";
-    h.style.top = centerY + offsetY + "px";
-    h.style.fontSize = (15 + Math.random() * 15) + "px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 1500);
-  }
-
-  const msg = document.createElement("div");
-  msg.textContent = "HEARTS FLOODED!";
-  msg.style.position = "fixed";
-  msg.style.top = centerY - 50 + "px";
-  msg.style.left = centerX + "px";
-  msg.style.transform = "translateX(-50%)";
-  msg.style.color = "rgba(255,0,100,0.9)";
-  msg.style.fontSize = "24px";
-  msg.style.fontWeight = "bold";
-  msg.style.zIndex = "25";
-  msg.style.opacity = "0";
-  msg.style.transition = "opacity 0.5s";
-  document.body.appendChild(msg);
-
-  setTimeout(() => { msg.style.opacity = "1"; }, 50);
-  setTimeout(() => { msg.style.opacity = "0"; setTimeout(()=> msg.remove(), 500); }, 1500);
-});
 </script>
 </body>
 </html>
