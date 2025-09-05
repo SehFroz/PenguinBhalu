@@ -18,15 +18,14 @@
 
   .button-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:20px; max-width:1000px; margin:150px auto 100px auto; justify-items:center; }
   
-  /* Fixed square buttons */
   .square-button {
     width:150px;
-    height:180px; /* taller to fit text */
+    height:180px;
     background-color: rgba(255,255,255,0.3);
     border-radius:20px;
     cursor:pointer;
     display:flex;
-    flex-direction:column; /* image top, text below */
+    flex-direction:column;
     align-items:center;
     justify-content:flex-start;
     transition: transform 0.3s, box-shadow 0.3s;
@@ -36,30 +35,41 @@
   .square-button img { width:100%; height:130px; object-fit:cover; border-radius:15px; }
   .square-button span { margin-top:6px; font-size:16px; font-weight:bold; text-align:center; }
 
-  /* Auto text color for day/night */
   body.day-theme .square-button span { color:black; }
   body.night-theme .square-button span { color:white; }
 
   .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
 
+  #password-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.85); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; z-index:50; color:white;
+  }
+  #password-overlay input {
+    padding:10px; border-radius:8px; border:none; font-size:16px; margin-bottom:10px;
+  }
+  #password-overlay button {
+    padding:10px 20px; border:none; border-radius:8px; font-size:16px;
+    cursor:pointer; background:#ff0077; color:white;
+  }
+
   .heart { position:absolute; color: rgba(255,0,100,0.6); font-size:20px; animation: floatUp 8s linear infinite; }
   @keyframes floatUp { 0% { transform:translateY(100vh) scale(0.5); opacity:0; } 30% { opacity:1; } 100% { transform:translateY(-10vh) scale(1.2); opacity:0; } }
-
   .petal { position:absolute; font-size:20px; opacity:0.8; animation: fallPetal 10s linear infinite; color:pink; }
   @keyframes fallPetal { 0% { transform: translateY(-10vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 100% { transform: translateY(110vh) rotate(360deg); opacity:0; } }
-
   .star { position:absolute; background:white; border-radius:50%; opacity:0.8; animation: twinkle 2s infinite alternate; }
   @keyframes twinkle { from {opacity:0.2;} to {opacity:1;} }
-
   .sticker { position:absolute; width:80px; animation: floatSticker 20s linear infinite; }
   @keyframes floatSticker { 0% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(50vw,50vh) rotate(180deg); } 100% { transform:translate(0,0) rotate(360deg); } }
-
-  #infinite-heart-btn { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 25px; font-size: 18px; background: rgba(255,0,100,0.8); color: white; border:none; border-radius:15px; cursor:pointer; z-index:20; display:none; }
-  .flying-heart { position:absolute; font-size:20px; color: rgba(255,0,100,0.7); animation: flyHeart 1s ease-out forwards; }
-  @keyframes flyHeart { 0% { transform: translate(0,0) scale(0.5); opacity:1; } 100% { transform: translate(0,-150px) scale(1.2); opacity:0; } }
 </style>
 </head>
 <body class="day-theme">
+
+<div id="password-overlay">
+  <h2>Enter Password to Continue</h2>
+  <input type="password" id="site-password" placeholder="Enter password">
+  <button onclick="checkPassword()">Enter</button>
+</div>
 
 <div class="background"></div>
 <div class="gradient-overlay"></div>
@@ -94,38 +104,31 @@
   </div>
 </div>
 
-<!-- Infinite Heart Button -->
-<button id="infinite-heart-btn">Press to send INFINITE Hearts to your Praty</button>
-
-<!-- Audio player for theme songs -->
-<audio id="theme-audio" autoplay loop></audio>
+<audio id="theme-audio" loop></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 const body = document.body;
 const btnContainer = document.getElementById("main-buttons");
-const heartBtn = document.getElementById("send-heart");
-const infiniteBtn = document.getElementById("infinite-heart-btn");
 const audioPlayer = document.getElementById("theme-audio");
 
-// 🎵 Songs
 const daySong = "Assets/One Love (Official Audio).mp3";
 const nightSong = "Assets/One Kiss (Official Video).mp3";
 
-// ✅ PASSWORD with music start
-let password = prompt("Enter the password to open the site:");
-if(password !== "PratyNoor1517"){
-  alert("Wrong password! Redirecting...");
-  window.location.href = "404.html";
-  throw "Access Denied";
-} else {
-  // Start day theme visuals + music
-  generatePetals();
-  audioPlayer.src = daySong;
-  audioPlayer.play();
+// ✅ Password check with audio start
+function checkPassword(){
+  const entered = document.getElementById("site-password").value;
+  if(entered === "PratyNoor1517"){
+    document.getElementById("password-overlay").style.display="none";
+    generatePetals();
+    audioPlayer.src = daySong;
+    audioPlayer.play();
+  } else {
+    alert("Wrong password!");
+    window.location.href="404.html";
+  }
 }
 
-// Floating hearts
 function createHeart(){ const h=document.createElement("div"); h.className="heart"; h.textContent="❤️"; h.style.left=Math.random()*window.innerWidth+"px"; h.style.fontSize=(Math.random()*20+10)+"px"; document.body.appendChild(h); setTimeout(()=>h.remove(),8000);}
 setInterval(createHeart,1500);
 
@@ -138,94 +141,29 @@ function clearStars(){ document.querySelectorAll(".star").forEach(s=>s.remove())
 function addSticker(){ const st=document.createElement("img"); st.src="Assets/Sticker.png"; st.className="sticker"; st.style.top=Math.random()*(window.innerHeight-100)+"px"; st.style.left=Math.random()*(window.innerWidth-100)+"px"; document.body.appendChild(st);}
 addSticker();
 
-// 🌙 Theme toggle with song switch
 function toggleTheme(){
   if(body.classList.contains("day-theme")){
     body.classList.remove("day-theme"); body.classList.add("night-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/NightBG.jpg')";
     clearPetals(); generateStars();
-    audioPlayer.src = nightSong;
-    audioPlayer.play();
+    audioPlayer.src = nightSong; audioPlayer.play();
   } else {
     body.classList.remove("night-theme"); body.classList.add("day-theme");
     document.querySelector(".background").style.backgroundImage="url('Assets/DayBG.jpg')";
     clearStars(); generatePetals();
-    audioPlayer.src = daySong;
-    audioPlayer.play();
+    audioPlayer.src = daySong; audioPlayer.play();
   }
 }
 
-// 👁️ Eye toggle buttons
 document.getElementById("toggle-buttons").addEventListener("click", ()=>{
   btnContainer.style.display = btnContainer.style.display !== "none" ? "none" : "grid";
 });
-
-// EmailJS Heart
-emailjs.init("JGhME2cskwslibmXv");
-heartBtn.addEventListener("click", ()=>{
-  infiniteBtn.style.display = "block";
-});
-
-// Infinite Heart Button
-infiniteBtn.addEventListener("click", () => {
-  emailjs.send("service_a7lopsi", "template_hh35k3a", {
-    to_email: "pratyyynooor@gmail.com",
-    message: "Noor clicked the INFINITE heart at " + new Date().toLocaleString()
-  }).then(() => { console.log("Infinite heart email sent!"); }).catch(err => console.log("Email error:", err));
-
-  const rect = infiniteBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  infiniteBtn.style.display = "none";
-
-  for (let i = 0; i < 25; i++) {
-    const h = document.createElement("div");
-    h.className = "flying-heart";
-    const offsetX = Math.random() * 100 - 50;
-    const offsetY = Math.random() * 100 - 50;
-    h.style.left = centerX + offsetX + "px";
-    h.style.top = centerY + offsetY + "px";
-    h.style.fontSize = (15 + Math.random() * 15) + "px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 1500);
-  }
-
-  const msg = document.createElement("div");
-  msg.textContent = "HEARTS FLOODED!";
-  msg.style.position = "fixed";
-  msg.style.top = centerY - 50 + "px";
-  msg.style.left = centerX + "px";
-  msg.style.transform = "translateX(-50%)";
-  msg.style.color = "rgba(255,0,100,0.9)";
-  msg.style.fontSize = "24px";
-  msg.style.fontWeight = "bold";
-  msg.style.zIndex = "25";
-  msg.style.opacity = "0";
-  msg.style.transition = "opacity 0.5s";
-  document.body.appendChild(msg);
-
-  setTimeout(() => { msg.style.opacity = "1"; }, 50);
-  setTimeout(() => { msg.style.opacity = "0"; setTimeout(()=> msg.remove(), 500); }, 1500);
-});
-
-// 💌 Coming Soon
 document.getElementById("surprise-popup").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
-
-// ℹ️ About → redirect to Coming Soon
 document.getElementById("about").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
-
-// Box 1 → redirect to Coming Soon
 document.getElementById("box1").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
-
-// Box 2 → Lekh
 document.getElementById("box2").addEventListener("click", ()=>{ window.location.href="Lekh.html"; });
-
-// Box 3 → Album
 document.getElementById("box3").addEventListener("click", ()=>{ window.location.href="Album.html"; });
-
-// Box 4 → Socials
 document.getElementById("box4").addEventListener("click", ()=>{ window.location.href="comingsoon.html"; });
-
 </script>
 </body>
 </html>
