@@ -17,10 +17,28 @@
   .left-strip button:hover { transform: scale(1.2); background: rgba(255,255,255,0.8); }
 
   .button-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:20px; max-width:1000px; margin:150px auto 100px auto; justify-items:center; }
-  .square-button { width:150px; height:150px; background-color: rgba(255,255,255,0.3); border-radius:20px; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-direction:column; transition: transform 0.3s, box-shadow 0.3s; }
+  
+  /* Fixed square buttons */
+  .square-button {
+    width:150px;
+    height:180px; /* taller to fit text */
+    background-color: rgba(255,255,255,0.3);
+    border-radius:20px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column; /* image top, text below */
+    align-items:center;
+    justify-content:flex-start;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding:8px;
+  }
   .square-button:hover { transform: scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
-  .square-button img { width:100%; height:100%; object-fit:cover; border-radius:20px; }
-  .square-button span { margin-top:8px; font-size:16px; font-weight:bold; color:black; }
+  .square-button img { width:100%; height:130px; object-fit:cover; border-radius:15px; }
+  .square-button span { margin-top:6px; font-size:16px; font-weight:bold; text-align:center; }
+
+  /* Auto text color for day/night */
+  body.day-theme .square-button span { color:black; }
+  body.night-theme .square-button span { color:white; }
 
   .theme-toggle { position:absolute; top:20px; right:20px; background: rgba(255,255,255,0.7); border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-size:18px; z-index:10; }
 
